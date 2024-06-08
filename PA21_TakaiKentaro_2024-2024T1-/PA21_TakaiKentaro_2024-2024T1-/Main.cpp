@@ -233,7 +233,9 @@ void Main()
 			if (MouseL.down()) { game = Title; }
 		}
 		break;
-		default:
+		default: {
+
+		}
 		break;
 		}
 	}
