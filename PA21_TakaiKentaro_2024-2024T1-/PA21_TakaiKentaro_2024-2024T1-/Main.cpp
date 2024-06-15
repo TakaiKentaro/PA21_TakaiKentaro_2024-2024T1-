@@ -63,6 +63,15 @@ void Main()
 	Circle ball{ 400, 400, 10 };
 #pragma endregion
 
+#pragma region Gun
+	const Vec2 muzzle;
+
+	Circle bullet{ muzzle.x,muzzle.y,5 };
+	double bulletSpeed = 300.0;
+	Vec2 bulletVelocity{ 0,-300.0 };
+	Array<Vec2> bullets;
+#pragma endregion
+
 #pragma region Bricks
 	/// @brief ブロック
 	Rect bricks[MAX];
@@ -149,6 +158,9 @@ void Main()
 			// ボール移動
 			ball.moveBy(ballVelocity * Scene::DeltaTime());
 
+			// バレット移動
+			bullet.moveBy(bulletVelocity * Scene::DeltaTime());
+
 			//==============================
 			// コリジョン
 			//==============================
@@ -158,8 +170,7 @@ void Main()
 				Rect& refBrick = bricks[i];
 
 				// 衝突を検知
-				if (refBrick.intersects(ball))
-				{
+				if (refBrick.intersects(ball)) {
 					// ブロックの上辺、または底辺と交差
 					if (refBrick.bottom().intersects(ball) || refBrick.top().intersects(ball))
 					{
@@ -178,6 +189,14 @@ void Main()
 
 					// 同一フレームでは複数のブロック衝突を検知しない
 					break;
+				}
+				if (refBrick.intersects(bullet)) {
+					// あたったブロックは画面外に出す
+					refBrick.y -= 600;
+					//スコア加算
+					score++;
+					//バレットの削除
+					bullets.clear();
 				}
 			}
 
@@ -236,7 +255,7 @@ void Main()
 		default: {
 
 		}
-		break;
+			   break;
 		}
 	}
 }
